@@ -313,6 +313,38 @@ export interface Database {
           updated_at?: string;
         };
       };
+      appointments: {
+        Row: {
+          id: string;
+          patient_id: string;
+          start_time: string;
+          end_time: string;
+          status: AppointmentStatus;
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          patient_id: string;
+          start_time: string;
+          end_time: string;
+          status?: AppointmentStatus;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          patient_id?: string;
+          start_time?: string;
+          end_time?: string;
+          status?: AppointmentStatus;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -322,6 +354,7 @@ export interface Database {
       payment_method: PaymentMethod;
       expense_category: ExpenseCategory;
       treatment_type: TreatmentType;
+      appointment_status: AppointmentStatus;
     };
   };
 }
@@ -355,4 +388,14 @@ export interface TransactionWithDetails extends Transaction {
 
 export interface TreatmentWithCategory extends Treatment {
   category: Category;
+}
+
+export type AppointmentStatus = "scheduled" | "confirmed" | "completed" | "cancelled" | "no_show";
+
+export type Appointment = Database["public"]["Tables"]["appointments"]["Row"];
+export type AppointmentInsert = Database["public"]["Tables"]["appointments"]["Insert"];
+export type AppointmentUpdate = Database["public"]["Tables"]["appointments"]["Update"];
+
+export interface AppointmentWithPatient extends Appointment {
+  patient: Patient;
 }
