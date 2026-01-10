@@ -12,7 +12,7 @@ interface PaymentMethodsChartProps {
   isLoading?: boolean;
 }
 
-const COLORS = ["#22c55e", "#3b82f6", "#f97316"];
+const COLORS = ["hsl(var(--primary))", "hsl(var(--secondary))", "hsl(var(--accent))"];
 
 export function PaymentMethodsChart({ data, isLoading }: PaymentMethodsChartProps) {
   const chartData = [
@@ -23,7 +23,7 @@ export function PaymentMethodsChart({ data, isLoading }: PaymentMethodsChartProp
 
   if (isLoading) {
     return (
-      <Card>
+      <Card className="col-span-1">
         <CardHeader>
           <CardTitle>Métodos de pago</CardTitle>
         </CardHeader>
@@ -40,7 +40,7 @@ export function PaymentMethodsChart({ data, isLoading }: PaymentMethodsChartProp
 
   if (total === 0) {
     return (
-      <Card>
+      <Card className="col-span-1">
         <CardHeader>
           <CardTitle>Métodos de pago</CardTitle>
         </CardHeader>
@@ -54,7 +54,7 @@ export function PaymentMethodsChart({ data, isLoading }: PaymentMethodsChartProp
   }
 
   return (
-    <Card>
+    <Card className="col-span-1">
       <CardHeader>
         <CardTitle>Métodos de pago</CardTitle>
       </CardHeader>
@@ -69,6 +69,7 @@ export function PaymentMethodsChart({ data, isLoading }: PaymentMethodsChartProp
               outerRadius={90}
               paddingAngle={5}
               dataKey="value"
+              stroke="none"
               label={({ percent }) => ((percent ?? 0) * 100).toFixed(0) + "%"}
             >
               {chartData.map((_, index) => (
@@ -77,12 +78,14 @@ export function PaymentMethodsChart({ data, isLoading }: PaymentMethodsChartProp
             </Pie>
             <Tooltip
               contentStyle={{
-                backgroundColor: "hsl(var(--card))",
+                backgroundColor: "hsl(var(--card)/0.8)",
                 border: "1px solid hsl(var(--border))",
                 borderRadius: "var(--radius)",
+                backdropFilter: "blur(4px)",
               }}
+              itemStyle={{ color: "hsl(var(--foreground))" }}
             />
-            <Legend />
+            <Legend formatter={(value) => <span style={{ color: "hsl(var(--foreground))" }}>{value}</span>} />
           </PieChart>
         </ResponsiveContainer>
       </CardContent>

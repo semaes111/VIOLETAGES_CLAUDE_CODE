@@ -73,14 +73,14 @@ export function HeatmapChart({ data, isLoading }: HeatmapChartProps) {
                         <div
                           key={`${day}-${hour}`}
                           className={cn(
-                            "flex-1 aspect-square rounded-sm transition-colors",
+                            "flex-1 aspect-square rounded-sm transition-colors cursor-default",
                             "hover:ring-2 hover:ring-primary hover:ring-offset-1"
                           )}
                           style={{
                             backgroundColor:
                               intensity > 0
-                                ? `rgba(30, 58, 95, ${0.1 + intensity * 0.9})`
-                                : "hsl(var(--muted))",
+                                ? `hsl(var(--primary) / ${0.1 + intensity * 0.9})`
+                                : "hsl(var(--muted)/0.3)",
                           }}
                           title={`${day} ${hour}:00 - ${value} transacciones`}
                         />
@@ -100,7 +100,7 @@ export function HeatmapChart({ data, isLoading }: HeatmapChartProps) {
                     key={opacity}
                     className="h-3 w-3 rounded-sm"
                     style={{
-                      backgroundColor: `rgba(30, 58, 95, ${opacity})`,
+                      backgroundColor: `hsl(var(--primary) / ${opacity})`,
                     }}
                   />
                 ))}

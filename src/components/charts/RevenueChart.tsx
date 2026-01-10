@@ -48,19 +48,19 @@ export function RevenueChart({ data, isLoading }: RevenueChartProps) {
           <AreaChart data={data}>
             <defs>
               <linearGradient id="colorMedical" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="colorAesthetic" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+                <stop offset="5%" stopColor="hsl(var(--secondary))" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="hsl(var(--secondary))" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="colorCosmetic" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+                <stop offset="5%" stopColor="hsl(var(--accent))" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="hsl(var(--accent))" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+            <CartesianGrid strokeDasharray="3 3" className="stroke-muted/20" />
             <XAxis
               dataKey="date"
               tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
@@ -74,16 +74,17 @@ export function RevenueChart({ data, isLoading }: RevenueChartProps) {
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: "hsl(var(--card))",
+                backgroundColor: "hsl(var(--card)/0.8)",
                 border: "1px solid hsl(var(--border))",
                 borderRadius: "var(--radius)",
+                backdropFilter: "blur(4px)",
               }}
             />
             <Area
               type="monotone"
               dataKey="medical"
               name="Medico"
-              stroke="#3b82f6"
+              stroke="hsl(var(--primary))"
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#colorMedical)"
@@ -92,7 +93,7 @@ export function RevenueChart({ data, isLoading }: RevenueChartProps) {
               type="monotone"
               dataKey="aesthetic"
               name="Estetico"
-              stroke="#22c55e"
+              stroke="hsl(var(--secondary))"
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#colorAesthetic)"
@@ -101,7 +102,7 @@ export function RevenueChart({ data, isLoading }: RevenueChartProps) {
               type="monotone"
               dataKey="cosmetic"
               name="Cosmetica"
-              stroke="#f97316"
+              stroke="hsl(var(--accent))"
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#colorCosmetic)"

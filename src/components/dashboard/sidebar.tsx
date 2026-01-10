@@ -67,18 +67,18 @@ export function Sidebar({
     <TooltipProvider delayDuration={0}>
       <aside
         className={cn(
-          "relative flex h-screen flex-col border-r bg-background transition-all duration-300",
+          "relative flex h-screen flex-col border-r glass transition-all duration-300",
           isCollapsed ? "w-16" : "w-64"
         )}
       >
         {/* Logo */}
-        <div className="flex h-16 items-center justify-center border-b px-4">
+        <div className="flex h-16 items-center justify-center border-b border-white/10 dark:border-slate-800/50 px-4">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary shadow-lg shadow-primary/30">
               <span className="text-lg font-bold text-white">V</span>
             </div>
             {!isCollapsed && (
-              <span className="text-xl font-bold text-primary">
+              <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 VioletaGest
               </span>
             )}
@@ -86,8 +86,8 @@ export function Sidebar({
         </div>
 
         {/* Navigation */}
-        <ScrollArea className="flex-1 px-2 py-4">
-          <nav className="flex flex-col gap-1">
+        <ScrollArea className="flex-1 px-3 py-4">
+          <nav className="flex flex-col gap-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -101,8 +101,9 @@ export function Sidebar({
                           variant={isActive ? "default" : "ghost"}
                           size="icon"
                           className={cn(
-                            "w-full",
-                            isActive && "bg-primary text-white"
+                            "w-full transition-all duration-200",
+                            isActive && "bg-primary text-white shadow-md shadow-primary/20",
+                            !isActive && "hover:bg-primary/10"
                           )}
                         >
                           <Icon className="h-5 w-5" />
@@ -119,8 +120,9 @@ export function Sidebar({
                   <Button
                     variant={isActive ? "default" : "ghost"}
                     className={cn(
-                      "w-full justify-start gap-3",
-                      isActive && "bg-primary text-white"
+                      "w-full justify-start gap-3 transiton-all duration-200",
+                      isActive && "bg-primary text-white shadow-md shadow-primary/20",
+                      !isActive && "hover:bg-primary/10"
                     )}
                   >
                     <Icon className="h-5 w-5" />
@@ -132,10 +134,10 @@ export function Sidebar({
           </nav>
         </ScrollArea>
 
-        <Separator />
+        <Separator className="bg-white/10 dark:bg-slate-800/50" />
 
         {/* Footer */}
-        <div className="p-2">
+        <div className="p-3">
           {/* Theme Toggle */}
           {isCollapsed ? (
             <Tooltip>
@@ -143,13 +145,13 @@ export function Sidebar({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="w-full"
+                  className="w-full hover:bg-white/10 dark:hover:bg-slate-800/50"
                   onClick={onThemeToggle}
                 >
                   {isDark ? (
-                    <Sun className="h-5 w-5" />
+                    <Sun className="h-5 w-5 text-secondary" />
                   ) : (
-                    <Moon className="h-5 w-5" />
+                    <Moon className="h-5 w-5 text-primary" />
                   )}
                 </Button>
               </TooltipTrigger>
@@ -160,13 +162,13 @@ export function Sidebar({
           ) : (
             <Button
               variant="ghost"
-              className="w-full justify-start gap-3"
+              className="w-full justify-start gap-3 hover:bg-white/10 dark:hover:bg-slate-800/50"
               onClick={onThemeToggle}
             >
               {isDark ? (
-                <Sun className="h-5 w-5" />
+                <Sun className="h-5 w-5 text-secondary" />
               ) : (
-                <Moon className="h-5 w-5" />
+                <Moon className="h-5 w-5 text-primary" />
               )}
               {isDark ? "Modo claro" : "Modo oscuro"}
             </Button>
@@ -175,14 +177,14 @@ export function Sidebar({
           {/* User & Logout */}
           {user && (
             <>
-              <Separator className="my-2" />
+              <Separator className="my-2 bg-white/10 dark:bg-slate-800/50" />
               {isCollapsed ? (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="w-full text-destructive hover:text-destructive"
+                      className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
                       onClick={onSignOut}
                     >
                       <LogOut className="h-5 w-5" />
@@ -197,7 +199,7 @@ export function Sidebar({
                   </div>
                   <Button
                     variant="ghost"
-                    className="w-full justify-start gap-3 text-destructive hover:text-destructive"
+                    className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10"
                     onClick={onSignOut}
                   >
                     <LogOut className="h-5 w-5" />
@@ -213,13 +215,13 @@ export function Sidebar({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute -right-3 top-20 h-6 w-6 rounded-full border bg-background"
+          className="absolute -right-3 top-20 h-6 w-6 rounded-full border glass hover:bg-primary hover:text-white transition-colors"
           onClick={onToggle}
         >
           {isCollapsed ? (
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-3 w-3" />
           ) : (
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-3 w-3" />
           )}
         </Button>
       </aside>

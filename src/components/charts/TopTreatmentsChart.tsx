@@ -59,7 +59,7 @@ export function TopTreatmentsChart({ data, isLoading }: TopTreatmentsChartProps)
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data} layout="vertical" margin={{ left: 80 }}>
-            <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+            <CartesianGrid strokeDasharray="3 3" className="stroke-muted/20" />
             <XAxis
               type="number"
               tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
@@ -76,16 +76,19 @@ export function TopTreatmentsChart({ data, isLoading }: TopTreatmentsChartProps)
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: "hsl(var(--card))",
+                backgroundColor: "hsl(var(--card)/0.8)",
                 border: "1px solid hsl(var(--border))",
                 borderRadius: "var(--radius)",
+                backdropFilter: "blur(4px)",
               }}
+              cursor={{ fill: "hsl(var(--muted)/0.2)" }}
             />
             <Bar
               dataKey="revenue"
-              fill="#1e3a5f"
+              fill="hsl(var(--primary))"
               radius={[0, 4, 4, 0]}
               name="Ingresos"
+              activeBar={{ fill: "hsl(var(--secondary))" }}
             />
           </BarChart>
         </ResponsiveContainer>

@@ -4,6 +4,7 @@ import * as React from "react";
 import { format, subDays, subWeeks, subMonths, subQuarters, subYears } from "date-fns";
 import { es } from "date-fns/locale";
 import { RefreshCw, DollarSign, Users, CreditCard, TrendingUp } from "lucide-react";
+import { motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -132,12 +133,32 @@ export default function DashboardPage() {
     return data;
   }, []);
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="space-y-6">
+    <motion.div 
+      className="space-y-6"
+      variants={container}
+      initial="hidden"
+      animate="show"
+    >
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <motion.div variants={item} className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-primary">
+          <h1 className="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
             Dashboard
           </h1>
           <p className="text-muted-foreground">
@@ -149,7 +170,7 @@ export default function DashboardPage() {
             value={period}
             onValueChange={(value) => setPeriod(value as Period)}
           >
-            <SelectTrigger className="w-[140px]">
+            <SelectTrigger className="w-[140px] glass">
               <SelectValue placeholder="Período" />
             </SelectTrigger>
             <SelectContent>
@@ -160,28 +181,30 @@ export default function DashboardPage() {
               ))}
             </SelectContent>
           </Select>
-          <Button variant="outline" onClick={handleRefresh}>
+          <Button variant="outline" onClick={handleRefresh} className="glass hover:bg-white/20">
             <RefreshCw className="mr-2 h-4 w-4" />
             Actualizar
           </Button>
         </div>
-      </div>
+      </motion.div>
 
       {/* KPI Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <motion.div variants={item} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <KPICard
           title="Ingresos totales"
           value={formatCurrency(stats?.totalAmount ?? 0)}
           description="vs periodo anterior"
           trend={{ value: 12.5, isPositive: true }}
-          icon={<DollarSign className="h-4 w-4" />}
+          icon={<DollarSign className="h-4 w-4 text-primary" />}
+          className="border-none shadow-lg shadow-primary/5"
         />
         <KPICard
           title="Transacciones"
           value={stats?.count ?? 0}
           description="vs periodo anterior"
           trend={{ value: 8.2, isPositive: true }}
-          icon={<TrendingUp className="h-4 w-4" />}
+          icon={<TrendingUp className="h-4 w-4 text-secondary" />}
+          className="border-none shadow-lg shadow-secondary/5"
         />
         <KPICard
           title="Ticket promedio"
@@ -189,19 +212,21 @@ export default function DashboardPage() {
             stats?.count ? (stats.totalAmount / stats.count) : 0
           )}
           description="por transacción"
-          icon={<CreditCard className="h-4 w-4" />}
+          icon={<CreditCard className="h-4 w-4 text-accent" />}
+          className="border-none shadow-lg shadow-accent/5"
         />
         <KPICard
           title="Pacientes activos"
           value={Math.floor(Math.random() * 50) + 100}
           description="en el período"
           trend={{ value: 5.1, isPositive: true }}
-          icon={<Users className="h-4 w-4" />}
+          icon={<Users className="h-4 w-4 text-green-500" />}
+          className="border-none"
         />
-      </div>
+      </motion.div>
 
       {/* Charts Row 1 */}
-      <div className="grid gap-4 lg:grid-cols-3">
+      <motion.div variants={item} className="grid gap-4 lg:grid-cols-3">
         <RevenueChart data={revenueChartData} isLoading={statsLoading} />
         <PaymentMethodsChart
           data={{
@@ -211,32 +236,34 @@ export default function DashboardPage() {
           }}
           isLoading={statsLoading}
         />
-      </div>
+      </motion.div>
 
       {/* Charts Row 2 */}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <motion.div variants={item} className="grid gap-4 lg:grid-cols-2">
         <TopTreatmentsChart data={topTreatmentsData} />
         <HeatmapChart data={heatmapData} />
-      </div>
+      </motion.div>
 
       {/* Recent Transactions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Últimas transacciones</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <TransactionsTable
-            data={transactions?.data ?? []}
-            isLoading={transactionsLoading}
-            page={page}
-            pageSize={5}
-            totalPages={transactions?.totalPages ?? 1}
-            totalCount={transactions?.count ?? 0}
-            onPageChange={setPage}
-            onPageSizeChange={() => {}}
-          />
-        </CardContent>
-      </Card>
-    </div>
+      <motion.div variants={item}>
+        <Card className="border-none">
+          <CardHeader>
+            <CardTitle>Últimas transacciones</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TransactionsTable
+              data={transactions?.data ?? []}
+              isLoading={transactionsLoading}
+              page={page}
+              pageSize={5}
+              totalPages={transactions?.totalPages ?? 1}
+              totalCount={transactions?.count ?? 0}
+              onPageChange={setPage}
+              onPageSizeChange={() => {}}
+            />
+          </CardContent>
+        </Card>
+      </motion.div>
+    </motion.div>
   );
 }
