@@ -4,6 +4,8 @@ import { Expense, ExpenseInsert, Supplier, Database } from "@/types/database";
 
 // --- Suppliers Hooks ---
 
+// --- Suppliers Hooks ---
+
 export function useSuppliers() {
   const supabase = createClient();
   
@@ -13,7 +15,6 @@ export function useSuppliers() {
       const { data, error } = await supabase
         .from("suppliers")
         .select("*")
-        .eq("is_active", true)
         .order("name");
       
       if (error) {
@@ -21,6 +22,76 @@ export function useSuppliers() {
       }
       
       return data as Supplier[];
+    },
+  });
+}
+
+export function useCreateSupplier() {
+  const supabase = createClient();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (newSupplier: Omit<Supplier, "id" | "created_at" | "updated_at">) => {
+      const { data, error } = await supabase
+        .from("suppliers")
+        .insert(newSupplier)
+        .select()
+        .single();
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["suppliers"] });
+    },
+  });
+}
+
+export function useUpdateSupplier() {
+  const supabase = createClient();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, ...updates }: Partial<Supplier> & { id: string }) => {
+      const { data, error } = await supabase
+        .from("suppliers")
+        .update(updates)
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["suppliers"] });
+    },
+  });
+}
+
+export function useDeleteSupplier() {
+  const supabase = createClient();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("suppliers")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["suppliers"] });
     },
   });
 }
