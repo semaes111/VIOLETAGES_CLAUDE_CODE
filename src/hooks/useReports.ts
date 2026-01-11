@@ -35,7 +35,6 @@ export function useReports({ range }: UseReportsOptions) {
 
       // 2. Fetch Transactions
       const { data: transactionsData, error: txError } = await supabase
-        .schema("violeta_gest")
         .from("transactions")
         .select("*")
         .gte("date", strStartDate)
@@ -46,7 +45,6 @@ export function useReports({ range }: UseReportsOptions) {
 
       // 3. Fetch Expenses
       const { data: expensesData, error: expError } = await supabase
-        .schema("violeta_gest")
         .from("expenses")
         .select("*")
         .gte("date", strStartDate)
@@ -58,7 +56,6 @@ export function useReports({ range }: UseReportsOptions) {
       // 4. Fetch Transaction Items (for Top Treatments)
       // We join with treatments to get names
       const { data: itemsData, error: itemsError } = await supabase
-        .schema("violeta_gest")
         .from("transaction_items")
         .select("*, treatment:treatments(name)")
         .gte("created_at", strStartDate)

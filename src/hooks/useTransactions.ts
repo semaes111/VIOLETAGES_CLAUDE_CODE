@@ -48,7 +48,6 @@ export function useTransactions(filters: TransactionFilters = {}) {
     queryKey: ["transactions", filters],
     queryFn: async (): Promise<PaginatedResult<TransactionWithDetails>> => {
       let query = supabase
-        .schema("violeta_gest")
         .from("transactions")
         .select(
           `
@@ -105,7 +104,6 @@ export function useTransaction(id: string) {
     queryKey: ["transaction", id],
     queryFn: async (): Promise<TransactionWithDetails> => {
       const { data, error } = await supabase
-        .schema("violeta_gest")
         .from("transactions")
         .select(
           `
@@ -131,7 +129,7 @@ export function useTransactionStats(dateFrom?: string, dateTo?: string) {
   return useQuery({
     queryKey: ["transactionStats", dateFrom, dateTo],
     queryFn: async (): Promise<TransactionStats> => {
-      let query = supabase.schema("violeta_gest").from("transactions").select("*");
+      let query = supabase.from("transactions").select("*");
 
       if (dateFrom) {
         query = query.gte("date", dateFrom);
@@ -192,7 +190,6 @@ export function useCreateTransaction() {
 
       // Create transaction
       const { data: transaction, error: transactionError } = await supabase
-        .schema("violeta_gest")
         .from("transactions")
         .insert(transactionData)
         .select()
@@ -208,7 +205,6 @@ export function useCreateTransaction() {
         }));
 
         const { error: itemsError } = await supabase
-          .schema("violeta_gest")
           .from("transaction_items")
           .insert(itemsWithTransactionId);
 
@@ -238,7 +234,6 @@ export function useUpdateTransaction() {
       data: TransactionUpdate;
     }) => {
       const { data: transaction, error } = await supabase
-        .schema("violeta_gest")
         .from("transactions")
         .update(data)
         .eq("id", id)
@@ -264,10 +259,10 @@ export function useDeleteTransaction() {
   return useMutation({
     mutationFn: async (id: string) => {
       // Delete items first
-      await supabase.schema("violeta_gest").from("transaction_items").delete().eq("transaction_id", id);
+      await supabase.from("transaction_items").delete().eq("transaction_id", id);
 
       // Delete transaction
-      const { error } = await supabase.schema("violeta_gest").from("transactions").delete().eq("id", id);
+      const { error } = await supabase.from("transactions").delete().eq("id", id);
 
       if (error) throw error;
     },

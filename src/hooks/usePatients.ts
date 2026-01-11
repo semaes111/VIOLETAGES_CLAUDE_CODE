@@ -31,7 +31,6 @@ export function usePatients(filters: PatientFilters = {}) {
     queryKey: ["patients", filters],
     queryFn: async (): Promise<PaginatedResult<Patient>> => {
       let query = supabase
-        .schema("violeta_gest")
         .from("patients")
         .select("*", { count: "exact" })
         .order("created_at", { ascending: false });
@@ -72,7 +71,6 @@ export function usePatient(id: string) {
     queryKey: ["patient", id],
     queryFn: async (): Promise<Patient> => {
       const { data, error } = await supabase
-        .schema("violeta_gest")
         .from("patients")
         .select("*")
         .eq("id", id)
@@ -93,7 +91,6 @@ export function useCreatePatient() {
   return useMutation({
     mutationFn: async (data: PatientInsert) => {
       const { data: patient, error } = await supabase
-        .schema("violeta_gest")
         .from("patients")
         .insert(data)
         .select()
@@ -116,7 +113,6 @@ export function useUpdatePatient() {
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: PatientUpdate }) => {
       const { data: patient, error } = await supabase
-        .schema("violeta_gest")
         .from("patients")
         .update(data)
         .eq("id", id)
@@ -140,7 +136,7 @@ export function useDeletePatient() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.schema("violeta_gest").from("patients").delete().eq("id", id);
+      const { error } = await supabase.from("patients").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
