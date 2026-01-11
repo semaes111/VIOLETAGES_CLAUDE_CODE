@@ -4,6 +4,8 @@ import { MainLayout } from "@/components/dashboard/main-layout";
 import { QueryProvider } from "@/providers/query-provider";
 import { AuthProvider, useAuth } from "@/providers/auth-provider";
 
+export const dynamic = "force-dynamic";
+
 function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const { user, signOut } = useAuth();
 
