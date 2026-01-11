@@ -9,6 +9,7 @@ export function useAppointments(start?: Date, end?: Date) {
     queryKey: ["appointments", start, end],
     queryFn: async () => {
       let query = supabase
+        .schema("violeta_gest")
         .from("appointments")
         .select("*, patient:patients(id, name, phone, email)")
         .order("start_time", { ascending: true });
@@ -38,6 +39,7 @@ export function useCreateAppointment() {
   return useMutation({
     mutationFn: async (newAppointment: AppointmentInsert) => {
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("appointments")
         .insert(newAppointment)
         .select()
@@ -62,6 +64,7 @@ export function useUpdateAppointment() {
   return useMutation({
     mutationFn: async ({ id, ...updates }: AppointmentUpdate & { id: string }) => {
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("appointments")
         .update(updates)
         .eq("id", id)
@@ -87,6 +90,7 @@ export function useDeleteAppointment() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
+        .schema("violeta_gest")
         .from("appointments")
         .delete()
         .eq("id", id);

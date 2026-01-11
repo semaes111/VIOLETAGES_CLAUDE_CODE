@@ -4,12 +4,13 @@ import { Product } from "@/types/database";
 
 export function useProducts() {
   const supabase = createClient();
-  
+
   return useQuery({
     queryKey: ["products"],
     queryFn: async () => {
       // Fetch products and join with suppliers used in UI (name)
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("products")
         .select("*, supplier:suppliers(name)")
         .order("name");
@@ -31,6 +32,7 @@ export function useCreateProduct() {
   return useMutation({
     mutationFn: async (newProduct: Omit<Product, "id" | "created_at" | "updated_at">) => {
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("products")
         .insert(newProduct)
         .select()
@@ -55,6 +57,7 @@ export function useUpdateProduct() {
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<Product> & { id: string }) => {
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("products")
         .update(updates)
         .eq("id", id)
@@ -80,6 +83,7 @@ export function useDeleteProduct() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
+        .schema("violeta_gest")
         .from("products")
         .delete()
         .eq("id", id);

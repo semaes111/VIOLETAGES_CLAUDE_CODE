@@ -6,11 +6,12 @@ import { Treatment, TreatmentInsert, Category, Database } from "@/types/database
 
 export function useCategories() {
   const supabase = createClient();
-  
+
   return useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("categories")
         .select("*")
         .order("name");
@@ -31,6 +32,7 @@ export function useCreateCategory() {
   return useMutation({
     mutationFn: async (newCategory: Omit<Category, "id" | "created_at" | "updated_at">) => {
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("categories")
         .insert(newCategory)
         .select()
@@ -55,6 +57,7 @@ export function useUpdateCategory() {
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<Category> & { id: string }) => {
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("categories")
         .update(updates)
         .eq("id", id)
@@ -80,6 +83,7 @@ export function useDeleteCategory() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
+        .schema("violeta_gest")
         .from("categories")
         .delete()
         .eq("id", id);
@@ -110,6 +114,7 @@ export function useTreatments({ page = 1, pageSize = 10, search = "", categoryId
     queryKey: ["treatments", page, pageSize, search, categoryId],
     queryFn: async () => {
       let query = supabase
+        .schema("violeta_gest")
         .from("treatments")
         .select("*, category:categories(*)", { count: "exact" });
 
@@ -148,6 +153,7 @@ export function useCreateTreatment() {
   return useMutation({
     mutationFn: async (newTreatment: TreatmentInsert) => {
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("treatments")
         .insert(newTreatment)
         .select()
@@ -172,6 +178,7 @@ export function useUpdateTreatment() {
   return useMutation({
     mutationFn: async ({ id, ...updates }: Database["public"]["Tables"]["treatments"]["Update"] & { id: string }) => {
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("treatments")
         .update(updates)
         .eq("id", id)
@@ -197,6 +204,7 @@ export function useDeleteTreatment() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
+        .schema("violeta_gest")
         .from("treatments")
         .delete()
         .eq("id", id);

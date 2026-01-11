@@ -8,11 +8,12 @@ import { Expense, ExpenseInsert, Supplier, Database } from "@/types/database";
 
 export function useSuppliers() {
   const supabase = createClient();
-  
+
   return useQuery({
     queryKey: ["suppliers"],
     queryFn: async () => {
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("suppliers")
         .select("*")
         .order("name");
@@ -33,6 +34,7 @@ export function useCreateSupplier() {
   return useMutation({
     mutationFn: async (newSupplier: Omit<Supplier, "id" | "created_at" | "updated_at">) => {
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("suppliers")
         .insert(newSupplier)
         .select()
@@ -57,6 +59,7 @@ export function useUpdateSupplier() {
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<Supplier> & { id: string }) => {
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("suppliers")
         .update(updates)
         .eq("id", id)
@@ -82,6 +85,7 @@ export function useDeleteSupplier() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
+        .schema("violeta_gest")
         .from("suppliers")
         .delete()
         .eq("id", id);
@@ -112,6 +116,7 @@ export function useExpenses({ page = 1, pageSize = 10, search = "", category }: 
     queryKey: ["expenses", page, pageSize, search, category],
     queryFn: async () => {
       let query = supabase
+        .schema("violeta_gest")
         .from("expenses")
         .select("*, supplier:suppliers(*)", { count: "exact" });
 
@@ -150,6 +155,7 @@ export function useCreateExpense() {
   return useMutation({
     mutationFn: async (newExpense: ExpenseInsert) => {
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("expenses")
         .insert(newExpense)
         .select()
@@ -174,6 +180,7 @@ export function useUpdateExpense() {
   return useMutation({
     mutationFn: async ({ id, ...updates }: Database["public"]["Tables"]["expenses"]["Update"] & { id: string }) => {
       const { data, error } = await supabase
+        .schema("violeta_gest")
         .from("expenses")
         .update(updates)
         .eq("id", id)
@@ -199,6 +206,7 @@ export function useDeleteExpense() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
+        .schema("violeta_gest")
         .from("expenses")
         .delete()
         .eq("id", id);
