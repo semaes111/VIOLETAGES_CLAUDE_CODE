@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { startOfMonth, endOfMonth, subDays, startOfYear, endOfYear, format, parseISO } from "date-fns";
+import { startOfMonth, endOfMonth, subDays, format, parseISO } from "date-fns";
 import { createClient } from "@/lib/supabase/client";
 import { Transaction, Expense, TransactionItem } from "@/types/database";
 
@@ -7,31 +7,41 @@ export type DateRangeType = "30days" | "month" | "year";
 
 interface UseReportsOptions {
   range: DateRangeType;
+  year?: string;
 }
 
-export function useReports({ range }: UseReportsOptions) {
+export function useReports({ range, year }: UseReportsOptions) {
   const supabase = createClient();
 
   return useQuery({
-    queryKey: ["reports", range],
+    queryKey: ["reports", range, year],
     queryFn: async () => {
       // 1. Determine date range
       const now = new Date();
       let startDate: Date;
       let endDate: Date = now;
 
+      const selectedYear = year && year !== "all" ? parseInt(year) : now.getFullYear();
+
       if (range === "30days") {
         startDate = subDays(now, 30);
+        endDate = now;
       } else if (range === "month") {
-        startDate = startOfMonth(now);
-        endDate = endOfMonth(now);
+        const referenceDate = new Date(selectedYear, now.getMonth(), 1);
+        startDate = startOfMonth(referenceDate);
+        endDate = endOfMonth(referenceDate);
       } else {
-        startDate = startOfYear(now);
-        endDate = endOfYear(now);
+        if (year === "all") {
+          startDate = new Date(2022, 0, 1);
+          endDate = new Date(2026, 11, 31);
+        } else {
+          startDate = new Date(selectedYear, 0, 1);
+          endDate = new Date(selectedYear, 11, 31);
+        }
       }
 
-      const strStartDate = startDate.toISOString();
-      const strEndDate = endDate.toISOString();
+      const strStartDate = format(startDate, "yyyy-MM-dd");
+      const strEndDate = format(endDate, "yyyy-MM-dd");
 
       // 2. Fetch Transactions
       const { data: transactionsData, error: txError } = await supabase

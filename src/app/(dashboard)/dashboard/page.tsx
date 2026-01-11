@@ -33,6 +33,14 @@ const periodOptions = [
   { value: "year", label: "Año" },
 ];
 
+const yearOptions = [
+  { value: "2022", label: "2022" },
+  { value: "2023", label: "2023" },
+  { value: "2024", label: "2024" },
+  { value: "2025", label: "2025" },
+  { value: "2026", label: "2026" },
+];
+
 function getDateRange(period: Period): { from: string; to: string } {
   const now = new Date();
   const to = format(now, "yyyy-MM-dd");
@@ -63,9 +71,18 @@ function getDateRange(period: Period): { from: string; to: string } {
 
 export default function DashboardPage() {
   const [period, setPeriod] = React.useState<Period>("month");
+  const [selectedYear, setSelectedYear] = React.useState<string>(new Date().getFullYear().toString());
   const [page, setPage] = React.useState(1);
 
-  const dateRange = getDateRange(period);
+  const dateRange = React.useMemo(() => {
+    if (period === "year") {
+      return {
+        from: `${selectedYear}-01-01`,
+        to: `${selectedYear}-12-31`,
+      };
+    }
+    return getDateRange(period);
+  }, [period, selectedYear]);
 
   const { data: stats, isLoading: statsLoading, refetch: refetchStats } = useTransactionStats(
     dateRange.from,
@@ -195,6 +212,23 @@ export default function DashboardPage() {
               ))}
             </SelectContent>
           </Select>
+          {period === "year" && (
+            <Select
+              value={selectedYear}
+              onValueChange={setSelectedYear}
+            >
+              <SelectTrigger className="w-[100px] glass">
+                <SelectValue placeholder="Año" />
+              </SelectTrigger>
+              <SelectContent>
+                {yearOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
           <Button variant="outline" onClick={handleRefresh} className="glass hover:bg-white/20">
             <RefreshCw className="mr-2 h-4 w-4" />
             Actualizar

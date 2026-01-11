@@ -21,11 +21,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RevenueChart } from "@/components/charts/RevenueChart";
 import { PaymentMethodsChart } from "@/components/charts/PaymentMethodsChart";
 import { TopTreatmentsChart } from "@/components/charts/TopTreatmentsChart";
+import { YearComparisonChart } from "@/components/charts/YearComparisonChart";
+import { GrowthMetricsCard } from "@/components/charts/GrowthMetricsCard";
 import { useReports, DateRangeType } from "@/hooks/useReports";
+import { useYearComparison } from "@/hooks/useYearComparison";
+
+const yearOptions = [
+  { value: "2022", label: "2022" },
+  { value: "2023", label: "2023" },
+  { value: "2024", label: "2024" },
+  { value: "2025", label: "2025" },
+  { value: "2026", label: "2026" },
+  { value: "all", label: "Todos los años" },
+];
 
 export default function InformesPage() {
   const [range, setRange] = useState<DateRangeType>("month");
-  const { data, isLoading } = useReports({ range });
+  const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
+  const { data, isLoading } = useReports({ range, year: selectedYear });
+  const { data: yearComparisonData, isLoading: yearComparisonLoading } = useYearComparison();
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("es-ES", {
@@ -56,7 +70,22 @@ export default function InformesPage() {
             <SelectContent>
               <SelectItem value="30days">Últimos 30 días</SelectItem>
               <SelectItem value="month">Este mes</SelectItem>
-              <SelectItem value="year">Este año</SelectItem>
+              <SelectItem value="year">Año completo</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select
+            value={selectedYear}
+            onValueChange={setSelectedYear}
+          >
+            <SelectTrigger className="w-[140px] glass">
+              <SelectValue placeholder="Año" />
+            </SelectTrigger>
+            <SelectContent>
+              {yearOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -154,10 +183,14 @@ export default function InformesPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <TopTreatmentsChart data={data?.topTreatments || []} isLoading={isLoading} />
-        
-        {/* Placeholder for future specific stats or map */}
+
+        <GrowthMetricsCard
+          metrics={yearComparisonData?.growthMetrics || []}
+          isLoading={yearComparisonLoading}
+        />
+
         <Card className="glass-card flex flex-col justify-center items-center p-6 text-center text-muted-foreground border-dashed">
              <Activity className="h-12 w-12 mb-4 opacity-50" />
              <h3 className="text-lg font-medium">Próximamente: Análisis de Retención</h3>
@@ -165,6 +198,14 @@ export default function InformesPage() {
                Estamos trabajando en métricas avanzadas para medir la recurrencia de pacientes.
              </p>
         </Card>
+      </div>
+
+      {/* Year Comparison Chart */}
+      <div className="grid gap-4">
+        <YearComparisonChart
+          data={yearComparisonData?.yearData || []}
+          isLoading={yearComparisonLoading}
+        />
       </div>
     </div>
   );
