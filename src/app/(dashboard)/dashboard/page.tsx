@@ -91,9 +91,23 @@ export default function DashboardPage() {
     }).format(amount);
 
   // Mock data for charts (in real app, this would come from API)
-  const revenueChartData = React.useMemo(() => {
+  const [revenueChartData, setRevenueChartData] = React.useState<Array<{
+    date: string;
+    total: number;
+    medical: number;
+    aesthetic: number;
+    cosmetic: number;
+  }>>([]);
+
+  const [heatmapData, setHeatmapData] = React.useState<Array<{
+    day: string;
+    hour: number;
+    value: number;
+  }>>([]);
+
+  React.useEffect(() => {
     const days = period === "today" ? 1 : period === "week" ? 7 : period === "month" ? 30 : 90;
-    return Array.from({ length: Math.min(days, 30) }, (_, i) => {
+    const data = Array.from({ length: Math.min(days, 30) }, (_, i) => {
       const date = subDays(new Date(), days - 1 - i);
       return {
         date: format(date, "dd/MM", { locale: es }),
@@ -103,6 +117,7 @@ export default function DashboardPage() {
         cosmetic: Math.random() * 200 + 50,
       };
     });
+    setRevenueChartData(data);
   }, [period]);
 
   const topTreatmentsData = React.useMemo(
@@ -116,7 +131,7 @@ export default function DashboardPage() {
     []
   );
 
-  const heatmapData = React.useMemo(() => {
+  React.useEffect(() => {
     const days = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
     const data: Array<{ day: string; hour: number; value: number }> = [];
 
@@ -129,8 +144,7 @@ export default function DashboardPage() {
         });
       }
     });
-
-    return data;
+    setHeatmapData(data);
   }, []);
 
   const container = {
@@ -217,7 +231,7 @@ export default function DashboardPage() {
         />
         <KPICard
           title="Pacientes activos"
-          value={Math.floor(Math.random() * 50) + 100}
+          value={125}
           description="en el período"
           trend={{ value: 5.1, isPositive: true }}
           icon={<Users className="h-4 w-4 text-green-500" />}
